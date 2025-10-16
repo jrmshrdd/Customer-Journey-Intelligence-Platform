@@ -1,0 +1,13 @@
+Customers := DISTINCTCOUNT(DIM_USERS[USER_ID])
+Churn Risk (Avg) := AVERAGE(PREDICTIONS[CHURN_PROBA])
+High-Risk Customers :=
+  CALCULATE(
+    DISTINCTCOUNT(DIM_USERS[USER_ID]),
+    PREDICTIONS[RISK_BUCKET] IN {"High","Very High"}
+  )
+Revenue 90d := SUM(CUSTOMER_SNAPSHOT[REV90])
+Expected Saves (WhatIf) :=
+VAR pct = SELECTEDVALUE('WhatIf Churn Reduction'[WhatIf Churn Reduction Value], 0.00)
+VAR highRisk = CALCULATE(DISTINCTCOUNT(DIM_USERS[USER_ID]), PREDICTIONS[RISK_BUCKET] IN {"High","Very High"})
+RETURN highRisk * pct
+Avg Uplift := AVERAGE(UPLIFT_EFFECTS[UPLIFT])
